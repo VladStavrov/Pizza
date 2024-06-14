@@ -1,5 +1,6 @@
 package modsen.interns.pizza_modsen.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class Person {
     private String password;
     private String fullName;
     private String gender;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
     private String role;
     private String phoneNumber;

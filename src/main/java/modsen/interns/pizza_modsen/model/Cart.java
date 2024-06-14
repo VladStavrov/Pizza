@@ -19,5 +19,5 @@ public class Cart {
     private Product product;
 
     private int productQuantity;
-    private double totalCost;
+
 }

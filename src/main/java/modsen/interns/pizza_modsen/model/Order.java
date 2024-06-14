@@ -1,9 +1,11 @@
 package modsen.interns.pizza_modsen.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -23,7 +25,8 @@ public class Order {
     )
     private List<Product> products;
 
-    private LocalDate orderDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime orderDate;
     private String orderAddress;
     private String orderStatus;
     private double orderTotal;
