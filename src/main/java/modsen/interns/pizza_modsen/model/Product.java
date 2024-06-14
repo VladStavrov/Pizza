@@ -21,7 +21,6 @@ public class Product {
     private List<Order> orders;
 
     private double price;
-    private int quantityInStock;
     private String description;
     private String imageUrl;
 }

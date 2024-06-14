@@ -1,6 +1,8 @@
 package modsen.interns.pizza_modsen.product;
 
 import lombok.RequiredArgsConstructor;
+import modsen.interns.pizza_modsen.product.dto.CreateProductDTO;
+import modsen.interns.pizza_modsen.product.dto.ProductDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,14 +29,14 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductDTO createProduct(@RequestBody ProductDTO productDTO) {
-        return productService.saveProduct(productDTO);
+    public ProductDTO createProduct(@RequestBody CreateProductDTO productDTO) {
+        return productService.createProduct(productDTO);
     }
 
     @PutMapping(ID_PATH)
     public ProductDTO updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
         productDTO.setId(id);
-        return productService.saveProduct(productDTO);
+        return productService.updateProduct(id,productDTO);
     }
 
     @DeleteMapping(ID_PATH)
