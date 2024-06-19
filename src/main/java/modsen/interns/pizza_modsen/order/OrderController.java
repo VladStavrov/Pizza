@@ -4,14 +4,15 @@ package modsen.interns.pizza_modsen.order;
 import lombok.RequiredArgsConstructor;
 import modsen.interns.pizza_modsen.order.dto.CreateOrderDTO;
 import modsen.interns.pizza_modsen.order.dto.OrderDTO;
-import modsen.interns.pizza_modsen.product.ProductController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(ProductController.BASE_URL)
+@RequestMapping(OrderController.BASE_URL)
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -21,28 +22,34 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public List<OrderDTO> getAllOrders() {
-        return orderService.getAllOrders();
+    public ResponseEntity<?> getAllOrders() {
+        List<OrderDTO> orders = orderService.getAllOrders();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping(ID_PATH)
-    public Optional<OrderDTO> getOrderById(@PathVariable Long id) {
-        return orderService.getOrderById(id);
+    public ResponseEntity<?> getOrderById(@PathVariable Long id) {
+        Optional<OrderDTO> orderDTO = orderService.getOrderById(id);
+        return orderDTO.map(order -> new ResponseEntity<>(order, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public OrderDTO createOrder(@RequestBody CreateOrderDTO orderDTO) {
-        return orderService.createOrder(orderDTO);
+    public ResponseEntity<?> createOrder(@RequestBody CreateOrderDTO orderDTO) {
+        OrderDTO createdOrder = orderService.createOrder(orderDTO);
+        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 
     @PutMapping(ID_PATH)
-    public OrderDTO updateOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<?> updateOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO) {
         orderDTO.setId(id);
-        return orderService.updateOrder(id, orderDTO);
+        OrderDTO updatedOrder = orderService.updateOrder(id, orderDTO);
+        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
     }
 
     @DeleteMapping(ID_PATH)
-    public void deleteOrder(@PathVariable Long id) {
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

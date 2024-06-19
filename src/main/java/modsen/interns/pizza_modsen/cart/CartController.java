@@ -3,7 +3,8 @@ package modsen.interns.pizza_modsen.cart;
 import lombok.RequiredArgsConstructor;
 import modsen.interns.pizza_modsen.cart.dto.CartDTO;
 import modsen.interns.pizza_modsen.cart.dto.CreateCartDTO;
-import modsen.interns.pizza_modsen.cart.service.CartService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,27 +21,33 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public List<CartDTO> getAllCarts() {
-        return cartService.getAllCarts();
+    public ResponseEntity<?> getAllCarts() {
+        List<CartDTO> carts = cartService.getAllCarts();
+        return new ResponseEntity<>(carts, HttpStatus.OK);
     }
 
     @GetMapping(ID_PATH)
-    public Optional<CartDTO> getCartById(@PathVariable Long id) {
-        return cartService.getCartById(id);
+    public ResponseEntity<?> getCartById(@PathVariable Long id) {
+        Optional<CartDTO> cartDTO = cartService.getCartById(id);
+        return cartDTO.map(cart -> new ResponseEntity<>(cart, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public CartDTO createCart(@RequestBody CreateCartDTO createCartDTO) {
-        return cartService.createCart(createCartDTO);
+    public ResponseEntity<?> createCart(@RequestBody CreateCartDTO createCartDTO) {
+        CartDTO createdCart = cartService.createCart(createCartDTO);
+        return new ResponseEntity<>(createdCart, HttpStatus.CREATED);
     }
 
     @PutMapping(ID_PATH)
-    public CartDTO updateCart(@PathVariable Long id, @RequestBody CreateCartDTO createCartDTO) {
-        return cartService.updateCart(id, createCartDTO);
+    public ResponseEntity<?> updateCart(@PathVariable Long id, @RequestBody CreateCartDTO createCartDTO) {
+        CartDTO updatedCart = cartService.updateCart(id, createCartDTO);
+        return new ResponseEntity<>(updatedCart, HttpStatus.OK);
     }
 
     @DeleteMapping(ID_PATH)
-    public void deleteCart(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCart(@PathVariable Long id) {
         cartService.deleteCart(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

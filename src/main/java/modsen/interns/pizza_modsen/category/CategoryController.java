@@ -3,6 +3,8 @@ package modsen.interns.pizza_modsen.category;
 import lombok.RequiredArgsConstructor;
 import modsen.interns.pizza_modsen.category.dto.CategoryDTO;
 import modsen.interns.pizza_modsen.category.dto.CreateCategoryDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,29 +14,41 @@ import java.util.Optional;
 @RequestMapping(CategoryController.BASE_URL)
 @RequiredArgsConstructor
 public class CategoryController {
-    public static final String BASE_URL = "/categories";
 
+    public static final String BASE_URL = "/categories";
     public static final String ID_PATH = "/{id}";
 
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDTO> getAllCategories(){return categoryService.getAllCategories();}
+    public ResponseEntity<?> getAllCategories() {
+        List<CategoryDTO> categories = categoryService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
 
     @GetMapping(ID_PATH)
-    public Optional<CategoryDTO> getCategoryById(@PathVariable Long id){return categoryService.getCategoryById(id);}
+    public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
+        Optional<CategoryDTO> categoryDTO = categoryService.getCategoryById(id);
+        return categoryDTO.map(category -> new ResponseEntity<>(category, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     @PostMapping
-    public CategoryDTO createCategory(@RequestBody CreateCategoryDTO categoryDTO){
-        return categoryService.createCategory(categoryDTO);
+    public ResponseEntity<?> createCategory(@RequestBody CreateCategoryDTO categoryDTO) {
+        CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
+        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
     @PutMapping(ID_PATH)
-    public CategoryDTO updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO){
+    public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
         categoryDTO.setId(id);
-        return categoryService.updateCategory(id, categoryDTO);
+        CategoryDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
 
     @DeleteMapping(ID_PATH)
-    public void deleteCategory(@PathVariable Long id){categoryService.deleteCategory(id);}
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

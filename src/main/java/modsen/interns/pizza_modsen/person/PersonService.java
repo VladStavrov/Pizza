@@ -1,5 +1,6 @@
 package modsen.interns.pizza_modsen.person;
 
+import lombok.RequiredArgsConstructor;
 import modsen.interns.pizza_modsen.model.Person;
 import modsen.interns.pizza_modsen.person.dto.CreatePersonDTO;
 import modsen.interns.pizza_modsen.person.dto.PersonDTO;
@@ -13,71 +14,47 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PersonService {
 
-    PersonRepository personRepository;
-    ModelMapper modelMapper;
-
+    private final PersonRepository personRepository;
+    private final ModelMapper modelMapper;
 
     public List<PersonDTO> getAllPersons() {
         return personRepository.findAll().stream()
-                .map(PersonDTO::new)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public Optional<PersonDTO> getPersonById(Long id) {
         return personRepository.findById(id)
-                .map(PersonDTO::new);
+                .map(this::convertToDTO);
     }
 
-    public PersonDTO createPerson(CreatePersonDTO personDTO) {
-        Person person = new Person();
-        person.setEmail(personDTO.getEmail());
-        person.setUsername(personDTO.getUsername());
-        person.setPassword(personDTO.getPassword());
-        person.setFullName(personDTO.getFullName());
-        person.setPhoneNumber(personDTO.getPhoneNumber());
-
+    public PersonDTO createPerson(CreatePersonDTO createPersonDTO) {
+        Person person = convertToEntity(createPersonDTO);
         Person savedPerson = personRepository.save(person);
-        return new PersonDTO(savedPerson);
+        return convertToDTO(savedPerson);
     }
 
     public PersonDTO updatePerson(Long personId, PersonDTO personDTO) {
         Person existingPerson = personRepository.findById(personId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found with id: " + personId));
 
-        if (personDTO.getEmail() != null) {
-            existingPerson.setEmail(personDTO.getEmail());
-        }
-        if (personDTO.getUsername() != null) {
-            existingPerson.setUsername(personDTO.getUsername());
-        }
-        if (personDTO.getPassword() != null) {
-            existingPerson.setPassword(personDTO.getPassword());
-        }
-        if (personDTO.getFullName() != null) {
-            existingPerson.setFullName(personDTO.getFullName());
-        }
-        if (personDTO.getGender() != null) {
-            existingPerson.setGender(personDTO.getGender());
-        }
-        if (personDTO.getBirthDate() != null) {
-            existingPerson.setBirthDate(personDTO.getBirthDate());
-        }
-        if (personDTO.getRole() != null) {
-            existingPerson.setRole(personDTO.getRole());
-        }
-        if (personDTO.getPhoneNumber() != null) {
-            existingPerson.setPhoneNumber(personDTO.getPhoneNumber());
-        }
-
+        modelMapper.map(personDTO, existingPerson);
         Person updatedPerson = personRepository.save(existingPerson);
-        return new PersonDTO(updatedPerson);
+        return convertToDTO(updatedPerson);
     }
 
     public void deletePerson(Long id) {
         personRepository.deleteById(id);
     }
 
+    private PersonDTO convertToDTO(Person person) {
+        return modelMapper.map(person, PersonDTO.class);
+    }
 
+    private Person convertToEntity(Object personDTO) {
+        return modelMapper.map(personDTO, Person.class);
+    }
 }

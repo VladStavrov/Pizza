@@ -1,9 +1,9 @@
 package modsen.interns.pizza_modsen.order;
 
+import lombok.RequiredArgsConstructor;
 import modsen.interns.pizza_modsen.model.Order;
 import modsen.interns.pizza_modsen.order.dto.CreateOrderDTO;
 import modsen.interns.pizza_modsen.order.dto.OrderDTO;
-import modsen.interns.pizza_modsen.person.dto.PersonDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,65 +14,47 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
-    OrderRepository orderRepository;
-    ModelMapper modelMapper;
+    private final OrderRepository orderRepository;
+    private final ModelMapper modelMapper;
 
     public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(OrderDTO::new)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public Optional<OrderDTO> getOrderById(Long id) {
         return orderRepository.findById(id)
-                .map(OrderDTO::new);
+                .map(this::convertToDTO);
     }
 
     public OrderDTO createOrder(CreateOrderDTO orderDTO) {
-        Order order = new Order();
-        order.setOrderDate(orderDTO.getOrderDate());
-        order.setOrderAddress(orderDTO.getOrderAddress());
-        order.setOrderStatus(orderDTO.getOrderStatus());
-        order.setOrderTotal(orderDTO.getOrderTotal());
-        order.setOrderType(orderDTO.getOrderType());
-        order.setPaymentMethod(orderDTO.getPaymentMethod());
-
+        Order order = convertToEntity(orderDTO);
         Order savedOrder = orderRepository.save(order);
-        return new OrderDTO(savedOrder);
+        return convertToDTO(savedOrder);
     }
 
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with id: " + orderId));
 
-        if (orderDTO.getOrderDate() != null) {
-            existingOrder.setOrderDate(orderDTO.getOrderDate());
-        }
-        if (orderDTO.getOrderAddress() != null) {
-            existingOrder.setOrderAddress(orderDTO.getOrderAddress());
-        }
-        if (orderDTO.getOrderStatus() != null) {
-            existingOrder.setOrderStatus(orderDTO.getOrderStatus());
-        }
-        if (orderDTO.getOrderTotal() != 0) {
-            existingOrder.setOrderTotal(orderDTO.getOrderTotal());
-        }
-        if (orderDTO.getOrderType() != null) {
-            existingOrder.setOrderType(orderDTO.getOrderType());
-        }
-        if (orderDTO.getPaymentMethod() != null) {
-            existingOrder.setPaymentMethod(orderDTO.getPaymentMethod());
-        }
-
+        modelMapper.map(orderDTO, existingOrder);
         Order updatedOrder = orderRepository.save(existingOrder);
-        return new OrderDTO(updatedOrder);
+        return convertToDTO(updatedOrder);
     }
 
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
 
+    private OrderDTO convertToDTO(Order order) {
+        return modelMapper.map(order, OrderDTO.class);
+    }
 
+    private Order convertToEntity(Object orderDTO) {
+        return modelMapper.map(orderDTO, Order.class);
+    }
 }

@@ -5,7 +5,9 @@ import modsen.interns.pizza_modsen.model.Product;
 import modsen.interns.pizza_modsen.product.dto.CreateProductDTO;
 import modsen.interns.pizza_modsen.product.dto.ProductDTO;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,54 +22,41 @@ public class ProductService {
 
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(ProductDTO::new)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     public Optional<ProductDTO> getProductById(Long id) {
         return productRepository.findById(id)
-                .map(ProductDTO::new);
+                .map(this::convertToDTO);
     }
 
     public ProductDTO createProduct(CreateProductDTO productDTO) {
-        //TODO create constructor Product(CreateProductDTO)
-        Product product = new Product();
-                //TODO  product.setCategory();
-        product.setPrice(product.getPrice());
-        product.setDescription(product.getDescription());
-        product.setImageUrl(product.getImageUrl());
-
+        Product product = convertToEntity(productDTO);
         Product savedProduct = productRepository.save(product);
-        return new ProductDTO(savedProduct);
+        return convertToDTO(savedProduct);
     }
+
     public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
-        Product existingProduct = productRepository.findById(productId).get();
-                //TODO  .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + productId));
-        //todo
-        /*
-        if (productDTO.getCategoryId() != null) {
-            Category category = categoryService.getCategoryById(productDTO.getCategoryId());
-            if (category == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with id: " + productDTO.getCategoryId());
-            }
-            existingProduct.setCategory(category);
-        }*/
-        if (productDTO.getPrice() != 0) {
-            existingProduct.setPrice(productDTO.getPrice());
-        }
-        if (productDTO.getDescription() != null) {
-            existingProduct.setDescription(productDTO.getDescription());
-        }
-        if (productDTO.getImageUrl() != null) {
-            existingProduct.setImageUrl(productDTO.getImageUrl());
-        }
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + productId));
+
+        modelMapper.map(productDTO, existingProduct);
 
         Product updatedProduct = productRepository.save(existingProduct);
-        return new ProductDTO(updatedProduct);
+        return convertToDTO(updatedProduct);
     }
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    private ProductDTO convertToDTO(Product product) {
+        return modelMapper.map(product, ProductDTO.class);
+    }
+
+    private Product convertToEntity(Object productDTO) {
+        return modelMapper.map(productDTO, Product.class);
     }
 
 
