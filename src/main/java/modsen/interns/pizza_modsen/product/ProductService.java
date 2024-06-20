@@ -35,6 +35,7 @@ public class ProductService {
     public ProductDTO createProduct(CreateProductDTO productDTO) {
         Product product = convertToEntity(productDTO);
         Category category = categoryService.getCategoryById(productDTO.getCategoryId());
+        product.setCategory(category);
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
     }
@@ -42,6 +43,8 @@ public class ProductService {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + productId));
         modelMapper.map(productDTO, existingProduct);
+        Category category = categoryService.getCategoryById(productDTO.getCategoryId());
+        existingProduct.setCategory(category);
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);
     }
