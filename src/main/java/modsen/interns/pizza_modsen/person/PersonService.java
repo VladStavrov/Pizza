@@ -31,6 +31,11 @@ public class PersonService {
                 .map(this::convertToDTO);
     }
 
+    public Optional<PersonDTO> getPersonByEmail(String email) {
+        return personRepository.findByEmail(email)
+                .map(this::convertToDTO);
+    }
+
     public PersonDTO createPerson(CreatePersonDTO createPersonDTO) {
         Person person = convertToEntity(createPersonDTO);
         Person savedPerson = personRepository.save(person);
