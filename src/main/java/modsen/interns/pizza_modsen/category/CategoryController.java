@@ -28,7 +28,7 @@ public class CategoryController {
 
     @GetMapping(ID_PATH)
     public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
-        Optional<CategoryDTO> categoryDTO = categoryService.getCategoryById(id);
+        Optional<CategoryDTO> categoryDTO = categoryService.getCategoryDTOById(id);
         return categoryDTO.map(category -> new ResponseEntity<>(category, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

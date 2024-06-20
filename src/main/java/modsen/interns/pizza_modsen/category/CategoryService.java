@@ -25,9 +25,13 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<CategoryDTO> getCategoryById(Long id){
+    public Optional<CategoryDTO> getCategoryDTOById(Long id){
         return categoryRepository.findById(id)
                 .map(CategoryDTO::new);
+    }
+    public Category getCategoryById(Long id){
+       return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with id: " + id));
     }
 
     public CategoryDTO createCategory(CreateCategoryDTO categoryDTO){

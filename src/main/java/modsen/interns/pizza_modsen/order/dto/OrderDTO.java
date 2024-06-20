@@ -11,15 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class OrderDTO {
 
-    public OrderDTO(Order order) {
-        this.id = order.getId();
-        this.orderDate = order.getOrderDate();
-        this.orderAddress = order.getOrderAddress();
-        this.orderStatus = order.getOrderStatus();
-        this.orderTotal = order.getOrderTotal();
-        this.orderType = order.getOrderType();
-        this.paymentMethod = order.getPaymentMethod();
-    }
+
 
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

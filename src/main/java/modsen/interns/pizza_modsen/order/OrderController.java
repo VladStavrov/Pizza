@@ -29,7 +29,7 @@ public class OrderController {
 
     @GetMapping(ID_PATH)
     public ResponseEntity<?> getOrderById(@PathVariable Long id) {
-        Optional<OrderDTO> orderDTO = orderService.getOrderById(id);
+        Optional<OrderDTO> orderDTO = orderService.getOrderDTOById(id);
         return orderDTO.map(order -> new ResponseEntity<>(order, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

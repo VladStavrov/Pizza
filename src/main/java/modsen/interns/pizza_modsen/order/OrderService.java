@@ -26,9 +26,13 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<OrderDTO> getOrderById(Long id) {
+    public Optional<OrderDTO> getOrderDTOById(Long id) {
         return orderRepository.findById(id)
                 .map(this::convertToDTO);
+    }
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with id: " + id));
     }
 
     public OrderDTO createOrder(CreateOrderDTO orderDTO) {

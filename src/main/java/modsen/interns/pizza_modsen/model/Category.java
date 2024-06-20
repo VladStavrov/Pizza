@@ -3,6 +3,8 @@ package modsen.interns.pizza_modsen.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 public class Category {
@@ -12,4 +14,5 @@ public class Category {
 
     @Column(nullable = false)
     private String name;
+
 }

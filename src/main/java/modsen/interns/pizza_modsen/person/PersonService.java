@@ -1,6 +1,7 @@
 package modsen.interns.pizza_modsen.person;
 
 import lombok.RequiredArgsConstructor;
+import modsen.interns.pizza_modsen.category.CategoryService;
 import modsen.interns.pizza_modsen.model.Person;
 import modsen.interns.pizza_modsen.person.dto.CreatePersonDTO;
 import modsen.interns.pizza_modsen.person.dto.PersonDTO;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class PersonService {
 
     private final PersonRepository personRepository;
+
     private final ModelMapper modelMapper;
 
     public List<PersonDTO> getAllPersons() {
@@ -33,7 +35,6 @@ public class PersonService {
     public Person getPersonByUsername(String username){
         return personRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found with username: " + username));
-
     }
 
     public Optional<PersonDTO> getPersonByEmail(String email) {
@@ -43,6 +44,7 @@ public class PersonService {
 
     public PersonDTO createPerson(CreatePersonDTO createPersonDTO) {
         Person person = convertToEntity(createPersonDTO);
+
         Person savedPerson = personRepository.save(person);
         return convertToDTO(savedPerson);
     }
