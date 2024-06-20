@@ -1,6 +1,7 @@
 package modsen.interns.pizza_modsen.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 @Entity
@@ -18,6 +19,8 @@ public class Cart {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Min(1)
+    @Column(nullable = false)
     private int productQuantity;
 
 }
