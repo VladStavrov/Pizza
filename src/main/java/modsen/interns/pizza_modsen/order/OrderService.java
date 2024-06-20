@@ -42,9 +42,7 @@ public class OrderService {
     }
 
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
-        Order existingOrder = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found with id: " + orderId));
-
+        Order existingOrder = getOrderById(orderId);
         modelMapper.map(orderDTO, existingOrder);
         Order updatedOrder = orderRepository.save(existingOrder);
         return convertToDTO(updatedOrder);
