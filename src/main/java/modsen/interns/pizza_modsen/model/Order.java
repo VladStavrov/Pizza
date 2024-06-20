@@ -28,6 +28,7 @@ public class Order {
     )
     private List<Product> products;
 
+    //TODO init
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime orderDate;

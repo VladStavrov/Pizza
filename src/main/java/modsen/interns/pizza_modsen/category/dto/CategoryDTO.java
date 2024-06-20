@@ -7,11 +7,6 @@ import modsen.interns.pizza_modsen.model.Category;
 @Data
 @NoArgsConstructor
 public class CategoryDTO {
-
-
-
     private Long id;
-
     private String name;
-
 }

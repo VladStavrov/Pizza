@@ -45,7 +45,7 @@ public class CategoryService {
 
     }
 
-    public CategoryDTO updateCategory(Long categoryId, CategoryDTO categoryDTO){
+    public CategoryDTO updateCategory(Long categoryId, CreateCategoryDTO categoryDTO){
         Category existingCategory = getCategoryById(categoryId);
         modelMapper.map(categoryDTO,existingCategory);
         Category updatedCategory = categoryRepository.save(existingCategory);

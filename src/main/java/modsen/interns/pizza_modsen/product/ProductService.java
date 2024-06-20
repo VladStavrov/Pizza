@@ -43,7 +43,7 @@ public class ProductService {
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
     }
-    public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
+    public ProductDTO updateProduct(Long productId, CreateProductDTO productDTO) {
         Product existingProduct = getProductById(productId);
         modelMapper.map(productDTO, existingProduct);
         Category category = categoryService.getCategoryById(productDTO.getCategoryId());

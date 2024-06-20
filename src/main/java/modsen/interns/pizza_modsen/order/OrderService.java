@@ -41,7 +41,7 @@ public class OrderService {
         return convertToDTO(savedOrder);
     }
 
-    public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
+    public OrderDTO updateOrder(Long orderId, CreateOrderDTO orderDTO) {
         Order existingOrder = getOrderById(orderId);
         modelMapper.map(orderDTO, existingOrder);
         Order updatedOrder = orderRepository.save(existingOrder);
@@ -51,11 +51,9 @@ public class OrderService {
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
-
     private OrderDTO convertToDTO(Order order) {
         return modelMapper.map(order, OrderDTO.class);
     }
-
     private Order convertToEntity(Object orderDTO) {
         return modelMapper.map(orderDTO, Order.class);
     }

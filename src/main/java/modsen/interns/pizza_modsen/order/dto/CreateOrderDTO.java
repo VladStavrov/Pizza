@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class CreateOrderDTO {
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime orderDate;
     private String orderAddress;
     private OrderStatus orderStatus;
     private double orderTotal;

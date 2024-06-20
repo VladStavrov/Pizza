@@ -17,7 +17,7 @@ import java.util.Optional;
 public class PersonController {
 
     public static final String BASE_URL = "/persons";
-    public static final String ID_PATH = "/{id}";
+    public static final String USERNAME_PATH = "/{username}";
 
     private final PersonService personService;
 
@@ -27,9 +27,9 @@ public class PersonController {
         return new ResponseEntity<>(persons, HttpStatus.OK);
     }
 
-    @GetMapping(ID_PATH)
-    public ResponseEntity<?>  getPersonById(@PathVariable Long id) {
-        Optional<PersonDTO> personDTO = personService.getPersonById(id);
+    @GetMapping(USERNAME_PATH)
+    public ResponseEntity<?>  getPersonById(@PathVariable String username) {
+        Optional<PersonDTO> personDTO = personService.getPersonDTOByUsername(username);
         return personDTO.map(person -> new ResponseEntity<>(person, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -40,16 +40,16 @@ public class PersonController {
         return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);
     }
 
-    @PutMapping(ID_PATH)
-    public ResponseEntity<?>  updatePerson(@PathVariable Long id, @RequestBody PersonDTO personDTO) {
-        personDTO.setId(id);
-        PersonDTO updatedPerson = personService.updatePerson(id, personDTO);
+    @PutMapping(USERNAME_PATH)
+    public ResponseEntity<?>  updatePerson(@PathVariable String username, @RequestBody CreatePersonDTO personDTO) {
+
+        PersonDTO updatedPerson = personService.updatePerson(username, personDTO);
         return new ResponseEntity<>(updatedPerson, HttpStatus.OK);
     }
 
-    @DeleteMapping(ID_PATH)
-    public ResponseEntity<?>  deletePerson(@PathVariable Long id) {
-        personService.deletePerson(id);
+    @DeleteMapping(USERNAME_PATH)
+    public ResponseEntity<?>  deletePerson(@PathVariable String username) {
+        personService.deletePerson(username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -28,8 +28,8 @@ public class PersonService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<PersonDTO> getPersonById(Long id) {
-        return personRepository.findById(id)
+    public Optional<PersonDTO> getPersonDTOByUsername(String username) {
+        return personRepository.findByUsername(username)
                 .map(this::convertToDTO);
     }
     public Person getPersonByUsername(String username){
@@ -49,17 +49,16 @@ public class PersonService {
         return convertToDTO(savedPerson);
     }
 
-    public PersonDTO updatePerson(Long personId, PersonDTO personDTO) {
-        Person existingPerson = personRepository.findById(personId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found with id: " + personId));
+    public PersonDTO updatePerson(String username, CreatePersonDTO personDTO) {
+        Person existingPerson = getPersonByUsername(username);
 
         modelMapper.map(personDTO, existingPerson);
         Person updatedPerson = personRepository.save(existingPerson);
         return convertToDTO(updatedPerson);
     }
 
-    public void deletePerson(Long id) {
-        personRepository.deleteById(id);
+    public void deletePerson(String username) {
+        personRepository.deleteByUsername(username);
     }
 
     private PersonDTO convertToDTO(Person person) {
