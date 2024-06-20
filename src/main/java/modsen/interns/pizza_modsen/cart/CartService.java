@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import modsen.interns.pizza_modsen.cart.dto.CartDTO;
 import modsen.interns.pizza_modsen.cart.dto.CreateCartDTO;
 import modsen.interns.pizza_modsen.model.Cart;
-import modsen.interns.pizza_modsen.person.PersonRepository;
-import modsen.interns.pizza_modsen.product.ProductRepository;
+import modsen.interns.pizza_modsen.model.Category;
+import modsen.interns.pizza_modsen.model.Person;
+import modsen.interns.pizza_modsen.model.Product;
+import modsen.interns.pizza_modsen.person.PersonService;
+import modsen.interns.pizza_modsen.product.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,8 +23,8 @@ import java.util.stream.Collectors;
 public class CartService {
 
     private final CartRepository cartRepository;
-    private final PersonRepository personRepository;
-    private final ProductRepository productRepository;
+    private final PersonService personService;
+    private final ProductService productService;
     private final ModelMapper modelMapper;
 
     public List<CartDTO> getAllCarts() {
@@ -30,43 +33,40 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<CartDTO> getCartById(Long id) {
+    public Optional<CartDTO> getCartDTOById(Long id) {
         return cartRepository.findById(id)
                 .map(this::convertToDTO);
     }
-
+    public Cart getCartById(Long id) {
+        return cartRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found with id: " + id));
+    }
     public CartDTO createCart(CreateCartDTO createCartDTO) {
-        Cart cart = new Cart();
-        return getCartFromDTO(createCartDTO, cart);
+        Cart existingCart = convertToEntity(createCartDTO);
+        Person person = personService.getPersonByUsername(createCartDTO.getUsername());
+        Product product = productService.getProductById(createCartDTO.getProductId());
+        existingCart.setUser(person);
+        existingCart.setProduct(product);
+        Cart updatedCart = cartRepository.save(existingCart);
+        return convertToDTO(updatedCart);
     }
-
     public CartDTO updateCart(Long cartId, CreateCartDTO createCartDTO) {
-        Cart existingCart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart not found with id: " + cartId));
-
-        return getCartFromDTO(createCartDTO, existingCart);
+        Cart existingCart = getCartById(cartId);
+        modelMapper.map(createCartDTO,existingCart);
+        Person person = personService.getPersonByUsername(createCartDTO.getUsername());
+        Product product = productService.getProductById(createCartDTO.getProductId());
+        existingCart.setUser(person);
+        existingCart.setProduct(product);
+        Cart updatedCart = cartRepository.save(existingCart);
+        return convertToDTO(updatedCart);
     }
-
     public void deleteCart(Long id) {
         cartRepository.deleteById(id);
     }
-
     private CartDTO convertToDTO(Cart cart) {
         return modelMapper.map(cart, CartDTO.class);
     }
-
-    private Cart convertToEntity(CreateCartDTO createCartDTO) {
-        return modelMapper.map(createCartDTO, Cart.class);
-    }
-
-    private CartDTO getCartFromDTO(CreateCartDTO createCartDTO, Cart existingCart) {
-        existingCart.setUser(personRepository.findById(createCartDTO.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + createCartDTO.getUserId())));
-        existingCart.setProduct(productRepository.findById(createCartDTO.getProductId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + createCartDTO.getProductId())));
-        existingCart.setProductQuantity(createCartDTO.getProductQuantity());
-
-        Cart updatedCart = cartRepository.save(existingCart);
-        return convertToDTO(updatedCart);
+    private Cart convertToEntity(Object cartDTO) {
+        return modelMapper.map(cartDTO, Cart.class);
     }
 }

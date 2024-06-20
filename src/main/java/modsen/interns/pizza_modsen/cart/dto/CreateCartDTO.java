@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CreateCartDTO {
-    private Long userId;
+    private String username;
     private Long productId;
     private int productQuantity;
 }

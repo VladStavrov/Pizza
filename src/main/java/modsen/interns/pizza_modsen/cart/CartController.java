@@ -28,7 +28,7 @@ public class CartController {
 
     @GetMapping(ID_PATH)
     public ResponseEntity<?> getCartById(@PathVariable Long id) {
-        Optional<CartDTO> cartDTO = cartService.getCartById(id);
+        Optional<CartDTO> cartDTO = cartService.getCartDTOById(id);
         return cartDTO.map(cart -> new ResponseEntity<>(cart, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

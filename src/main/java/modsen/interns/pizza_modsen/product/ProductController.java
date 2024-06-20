@@ -28,7 +28,7 @@ public class ProductController {
 
     @GetMapping(ID_PATH)
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
-        Optional<ProductDTO> productDTO = productService.getProductById(id);
+        Optional<ProductDTO> productDTO = productService.getProductDTOById(id);
         return productDTO.map(product -> new ResponseEntity<>(product, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
