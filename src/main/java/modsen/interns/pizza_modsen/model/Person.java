@@ -3,6 +3,7 @@ package modsen.interns.pizza_modsen.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
+import modsen.interns.pizza_modsen.model.enums.UserRole;
 
 import java.time.LocalDate;
 
@@ -20,6 +21,8 @@ public class Person {
     private String gender;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
     private String phoneNumber;
 }

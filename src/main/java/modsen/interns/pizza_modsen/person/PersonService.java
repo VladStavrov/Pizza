@@ -30,6 +30,11 @@ public class PersonService {
         return personRepository.findById(id)
                 .map(this::convertToDTO);
     }
+    public Person getPersonByUsername(String username){
+        return personRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found with username: " + username));
+
+    }
 
     public PersonDTO createPerson(CreatePersonDTO createPersonDTO) {
         Person person = convertToEntity(createPersonDTO);
