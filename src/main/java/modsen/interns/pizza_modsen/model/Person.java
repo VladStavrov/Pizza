@@ -3,6 +3,7 @@ package modsen.interns.pizza_modsen.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import modsen.interns.pizza_modsen.model.enums.Gender;
 import modsen.interns.pizza_modsen.model.enums.UserRole;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

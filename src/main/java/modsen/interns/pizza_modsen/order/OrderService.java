@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import modsen.interns.pizza_modsen.model.Order;
 import modsen.interns.pizza_modsen.order.dto.CreateOrderDTO;
 import modsen.interns.pizza_modsen.order.dto.OrderDTO;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class OrderService {
 
     public OrderDTO updateOrder(Long orderId, CreateOrderDTO orderDTO) {
         Order existingOrder = getOrderById(orderId);
+        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(orderDTO, existingOrder);
         Order updatedOrder = orderRepository.save(existingOrder);
         return convertToDTO(updatedOrder);

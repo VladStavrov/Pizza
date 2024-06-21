@@ -5,9 +5,11 @@ import modsen.interns.pizza_modsen.category.CategoryService;
 import modsen.interns.pizza_modsen.model.Person;
 import modsen.interns.pizza_modsen.person.dto.CreatePersonDTO;
 import modsen.interns.pizza_modsen.person.dto.PersonDTO;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -33,6 +35,7 @@ public class PersonService {
                 .map(this::convertToDTO);
     }
     public Person getPersonByUsername(String username){
+        System.out.println();
         return personRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found with username: " + username));
     }
@@ -51,12 +54,13 @@ public class PersonService {
 
     public PersonDTO updatePerson(String username, CreatePersonDTO personDTO) {
         Person existingPerson = getPersonByUsername(username);
-
+        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(personDTO, existingPerson);
         Person updatedPerson = personRepository.save(existingPerson);
         return convertToDTO(updatedPerson);
     }
 
+    @Transactional
     public void deletePerson(String username) {
         personRepository.deleteByUsername(username);
     }

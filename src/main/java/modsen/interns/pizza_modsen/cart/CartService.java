@@ -9,6 +9,7 @@ import modsen.interns.pizza_modsen.model.Person;
 import modsen.interns.pizza_modsen.model.Product;
 import modsen.interns.pizza_modsen.person.PersonService;
 import modsen.interns.pizza_modsen.product.ProductService;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ public class CartService {
     }
     public CartDTO updateCart(Long cartId, CreateCartDTO createCartDTO) {
         Cart existingCart = getCartById(cartId);
+        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(createCartDTO,existingCart);
         Person person = personService.getPersonByUsername(createCartDTO.getUsername());
         Product product = productService.getProductById(createCartDTO.getProductId());

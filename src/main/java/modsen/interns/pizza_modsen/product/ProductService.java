@@ -6,6 +6,7 @@ import modsen.interns.pizza_modsen.model.Category;
 import modsen.interns.pizza_modsen.model.Product;
 import modsen.interns.pizza_modsen.product.dto.CreateProductDTO;
 import modsen.interns.pizza_modsen.product.dto.ProductDTO;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,7 @@ public class ProductService {
     }
     public ProductDTO updateProduct(Long productId, CreateProductDTO productDTO) {
         Product existingProduct = getProductById(productId);
+        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(productDTO, existingProduct);
         Category category = categoryService.getCategoryById(productDTO.getCategoryId());
         existingProduct.setCategory(category);

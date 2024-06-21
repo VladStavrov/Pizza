@@ -6,6 +6,7 @@ import modsen.interns.pizza_modsen.category.dto.CreateCategoryDTO;
 import modsen.interns.pizza_modsen.model.Category;
 import modsen.interns.pizza_modsen.model.Order;
 import modsen.interns.pizza_modsen.order.dto.OrderDTO;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class CategoryService {
 
     public CategoryDTO updateCategory(Long categoryId, CreateCategoryDTO categoryDTO){
         Category existingCategory = getCategoryById(categoryId);
+        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(categoryDTO,existingCategory);
         Category updatedCategory = categoryRepository.save(existingCategory);
         return convertToDTO(updatedCategory);

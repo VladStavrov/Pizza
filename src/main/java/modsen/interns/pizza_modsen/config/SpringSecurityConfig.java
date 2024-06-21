@@ -31,9 +31,6 @@ public class SpringSecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers("/api/groups/**").authenticated()
-                                .requestMatchers("/api/queues/**").authenticated()
-                                .requestMatchers("/api/record-entries/**").authenticated()
                                 .requestMatchers("/info").authenticated()
                                 .requestMatchers("/admin").hasRole("ADMIN")
                                 .anyRequest().permitAll()

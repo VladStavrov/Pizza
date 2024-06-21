@@ -23,7 +23,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public JwtResponse authenticate(JwtRequest jwtRequest) {
+        public JwtResponse authenticate(JwtRequest jwtRequest) {
         return Optional
                 .of(personService.getPersonByUsername(jwtRequest.getUsername()))
                 .map(user -> {
