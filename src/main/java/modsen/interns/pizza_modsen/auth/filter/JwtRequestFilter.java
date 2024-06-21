@@ -34,9 +34,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
                 try {
-                    String email = jwtUtil.getUsernameFromJwt(jwt);
-                    if (StringUtils.isNotEmpty(email)) {
-                        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, null, Collections.singletonList(new SimpleGrantedAuthority(jwtUtil.getRoleFromJwt(jwt))));
+                    String username = jwtUtil.getUsernameFromJwt(jwt);
+                    if (StringUtils.isNotEmpty(username)) {
+                        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(new SimpleGrantedAuthority(jwtUtil.getRoleFromJwt(jwt))));
                         SecurityContextHolder.getContext().setAuthentication(token);
                     }
                 } catch (ExpiredJwtException e) {

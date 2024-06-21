@@ -40,7 +40,6 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus orderStatus;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private double orderTotal;
 
