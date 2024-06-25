@@ -12,5 +12,5 @@ public class AttributeDTO {
     private String title;
     private String slug;
     private String type;
-    private List<Category> categories;
+    private Long categoryId;
 }

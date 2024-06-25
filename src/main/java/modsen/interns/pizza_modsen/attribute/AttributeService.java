@@ -5,6 +5,7 @@ import modsen.interns.pizza_modsen.attribute.dto.AttributeDTO;
 import modsen.interns.pizza_modsen.attribute.dto.CreateAttributeDTO;
 import modsen.interns.pizza_modsen.category.CategoryService;
 import modsen.interns.pizza_modsen.model.Attribute;
+import modsen.interns.pizza_modsen.model.Category;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class AttributeService {
     private final AttributeRepository attributeRepository;
     private final ModelMapper modelMapper;
+    private final CategoryService categoryService;
 
     public List<AttributeDTO> getAllAttributes(){
         return attributeRepository.findAll()
@@ -38,7 +40,9 @@ public class AttributeService {
     }
 
     public AttributeDTO createAttribute(CreateAttributeDTO attributeDTO){
+        Category category = categoryService.getCategoryById(attributeDTO.getCategoryId());
         Attribute attribute = convertToEntity(attributeDTO);
+        attribute.setCategory(category);
         Attribute savedAttribute = attributeRepository.save(attribute);
         return convertToDTO(savedAttribute);
     }
