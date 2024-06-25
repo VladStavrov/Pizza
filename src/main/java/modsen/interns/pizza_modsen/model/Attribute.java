@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,13 +23,10 @@ public class Attribute {
     @Column(nullable = false)
     private String type;
 
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @ManyToMany
-    @JoinTable(
-            name = "attribute_category",
-            joinColumns = @JoinColumn(name = "attribute_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private List<Category> categories;
-
+    @OneToMany(mappedBy = "attribute",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<AttributeValue> attributeValues = new ArrayList<>();
 }

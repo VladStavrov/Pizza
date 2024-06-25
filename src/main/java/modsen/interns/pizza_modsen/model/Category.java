@@ -15,7 +15,9 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Attribute> attributes;
 
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
+    private List<Product> products;
 }

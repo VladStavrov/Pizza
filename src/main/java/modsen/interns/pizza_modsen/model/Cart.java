@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Data
 public class Cart {
@@ -11,13 +16,17 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
     private Person user;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
+    @JoinTable(
+            name = "cart_product",
+            joinColumns = @JoinColumn(name = "cart_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> productList = new ArrayList<>();
 
     @Min(1)
     @Column(nullable = false)

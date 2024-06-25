@@ -9,6 +9,7 @@ import modsen.interns.pizza_modsen.model.enums.PaymentMethod;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,13 +21,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
     @JoinTable(
             name = "order_product",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Product> products;
+    private List<Product> productList = new ArrayList<>();
+
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "person_id")
+    private Person person;
 
     //TODO init
     @Column(nullable = false)
@@ -50,4 +55,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethod paymentMethod;
+
+
 }

@@ -14,11 +14,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany(mappedBy = "products", cascade = CascadeType.REFRESH)
     private List<Order> orders;
 
     private double price;
@@ -27,5 +27,11 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<AttributeValue> attributeValues= new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "product")
+    private List<Cart> cartList= new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "product")
+    private List<Order> orderList= new ArrayList<>();
 
 }

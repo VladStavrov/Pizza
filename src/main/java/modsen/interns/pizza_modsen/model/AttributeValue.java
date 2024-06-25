@@ -17,7 +17,7 @@ public class AttributeValue {
     @Column(nullable = false)
     private String slug;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "attribute_id")
     private Attribute attribute;
 

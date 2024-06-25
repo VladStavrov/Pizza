@@ -8,6 +8,8 @@ import modsen.interns.pizza_modsen.model.enums.Gender;
 import modsen.interns.pizza_modsen.model.enums.UserRole;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -43,4 +45,10 @@ public class Person {
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
+
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
+
+    @OneToMany(mappedBy = "person",cascade = CascadeType.ALL)
+    private List<Order> orderList = new ArrayList<>();
 }
