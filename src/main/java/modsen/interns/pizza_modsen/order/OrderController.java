@@ -1,54 +1,52 @@
 package modsen.interns.pizza_modsen.order;
 
-
-import lombok.RequiredArgsConstructor;
 import modsen.interns.pizza_modsen.order.dto.CreateOrderDTO;
 import modsen.interns.pizza_modsen.order.dto.OrderDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping(OrderController.BASE_URL)
-@RequiredArgsConstructor
+@RequestMapping("/orders")
 public class OrderController {
-
-    public static final String BASE_URL = "/orders";
-    public static final String ID_PATH = "/{id}";
 
     private final OrderService orderService;
 
+    @Autowired
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
     @GetMapping
-    public ResponseEntity<?> getAllOrders() {
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
         List<OrderDTO> orders = orderService.getAllOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        return ResponseEntity.ok(orders);
     }
 
-    @GetMapping(ID_PATH)
-    public ResponseEntity<?> getOrderById(@PathVariable Long id) {
-        Optional<OrderDTO> orderDTO = orderService.getOrderDTOById(id);
-        return orderDTO.map(order -> new ResponseEntity<>(order, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
+        OrderDTO orderDTO = orderService.getOrderDTOById(id);
+        return ResponseEntity.ok(orderDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody CreateOrderDTO orderDTO) {
-        OrderDTO createdOrder = orderService.createOrder(orderDTO);
-        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+    @PostMapping("/username/{username}")
+    public ResponseEntity<OrderDTO> createOrder(@PathVariable String username,@RequestBody  CreateOrderDTO orderDTO) {
+        OrderDTO createdOrder = orderService.createOrder(orderDTO,username);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
 
-    @PutMapping(ID_PATH)
-    public ResponseEntity<?> updateOrder(@PathVariable Long id, @RequestBody CreateOrderDTO orderDTO) {
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestBody  CreateOrderDTO orderDTO) {
         OrderDTO updatedOrder = orderService.updateOrder(id, orderDTO);
-        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
+        return ResponseEntity.ok(updatedOrder);
     }
 
-    @DeleteMapping(ID_PATH)
-    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.noContent().build();
     }
 }

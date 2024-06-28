@@ -1,13 +1,13 @@
 package modsen.interns.pizza_modsen.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import modsen.interns.pizza_modsen.cart.dto.CreateCartProductDTO;
 import modsen.interns.pizza_modsen.model.enums.OrderStatus;
 import modsen.interns.pizza_modsen.model.enums.OrderType;
 import modsen.interns.pizza_modsen.model.enums.PaymentMethod;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +17,5 @@ public class CreateOrderDTO {
     private double orderTotal;
     private OrderType orderType;
     private PaymentMethod paymentMethod;
+    private List<CreateOrderProductDTO> orderProducts;
 }

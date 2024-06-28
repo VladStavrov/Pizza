@@ -20,5 +20,12 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="d5cokiu2d602am@cjpee40i0fqgl.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com [2]" uuid="6c0e628a-84ae-4b29-80cd-477c716334d9">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://cjpee40i0fqgl.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/d5cokiu2d602am</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

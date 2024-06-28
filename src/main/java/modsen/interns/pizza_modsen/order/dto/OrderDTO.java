@@ -9,6 +9,7 @@ import modsen.interns.pizza_modsen.model.enums.OrderType;
 import modsen.interns.pizza_modsen.model.enums.PaymentMethod;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +22,5 @@ public class OrderDTO {
     private double orderTotal;
     private OrderType orderType;
     private PaymentMethod paymentMethod;
+    private List<OrderProductDTO> orderProductsDTOList;
 }

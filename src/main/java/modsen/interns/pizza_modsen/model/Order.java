@@ -21,22 +21,23 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
-    @JoinTable(
-            name = "order_product",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> productList = new ArrayList<>();
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "person_id")
     private Person person;
 
-    //TODO init
+
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime orderDate;
+
+    @PrePersist
+    protected void onCreate() {
+        orderDate = LocalDateTime.now();
+    }
+
 
     @Column(nullable = false)
     private String orderAddress;

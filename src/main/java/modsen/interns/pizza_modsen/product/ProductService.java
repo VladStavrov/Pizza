@@ -39,7 +39,7 @@ public class ProductService {
     }
     public ProductDTO createProduct(CreateProductDTO productDTO) {
         Product product = convertToEntity(productDTO);
-        Category category = categoryService.getCategoryById(productDTO.getCategoryId());
+        Category category = categoryService.getCategoryById(productDTO.getCategory());
         product.setCategory(category);
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
@@ -48,7 +48,7 @@ public class ProductService {
         Product existingProduct = getProductById(productId);
         modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(productDTO, existingProduct);
-        Category category = categoryService.getCategoryById(productDTO.getCategoryId());
+        Category category = categoryService.getCategoryById(productDTO.getCategory());
         existingProduct.setCategory(category);
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);

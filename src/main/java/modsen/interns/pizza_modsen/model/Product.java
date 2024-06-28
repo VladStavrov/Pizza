@@ -18,9 +18,8 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(mappedBy = "products", cascade = CascadeType.REFRESH)
-    private List<Order> orders;
 
+    private String title;
     private double price;
     private String description;
     private String imageUrl;
@@ -28,10 +27,9 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<AttributeValue> attributeValues= new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "product")
-    private List<Cart> cartList= new ArrayList<>();
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private List<CartProduct> cartProducts = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "product")
-    private List<Order> orderList= new ArrayList<>();
-
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
 }

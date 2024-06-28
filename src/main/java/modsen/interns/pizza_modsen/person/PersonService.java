@@ -8,6 +8,7 @@ import modsen.interns.pizza_modsen.person.dto.PersonDTO;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 public class PersonService {
 
     private final PersonRepository personRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
     public List<PersonDTO> getAllPersons() {
@@ -47,7 +48,7 @@ public class PersonService {
 
     public PersonDTO createPerson(CreatePersonDTO createPersonDTO) {
         Person person = convertToEntity(createPersonDTO);
-
+        person.setPassword(passwordEncoder.encode(createPersonDTO.getPassword()));
         Person savedPerson = personRepository.save(person);
         return convertToDTO(savedPerson);
     }

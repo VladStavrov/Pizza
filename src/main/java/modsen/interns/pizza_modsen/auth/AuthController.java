@@ -51,6 +51,7 @@ public class AuthController {
             }
     )
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
+        System.out.println(authRequest);
         return ResponseEntity.ok(authService.authenticate(authRequest));
     }
 

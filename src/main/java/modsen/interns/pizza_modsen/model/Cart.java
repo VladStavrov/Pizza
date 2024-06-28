@@ -3,6 +3,7 @@ package modsen.interns.pizza_modsen.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
+import modsen.interns.pizza_modsen.cart.dto.CartProductDTO;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,16 +21,11 @@ public class Cart {
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private Person user;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
-    @JoinTable(
-            name = "cart_product",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> productList = new ArrayList<>();
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL)
+    private List<CartProduct> cartProducts = new ArrayList<>();
 
-    @Min(1)
-    @Column(nullable = false)
-    private int productQuantity;
+
+
+
 
 }
